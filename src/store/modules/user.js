@@ -1,6 +1,8 @@
+import { login } from '@/api/user'
 const state = {
   // 从缓存读取token
   tokens: localStorage.getItem('tokens') || null
+
 
 }
 const mutations = {
@@ -12,13 +14,13 @@ const mutations = {
     state.tokens = null
     localStorage.removeItem('tokens')
   }
-}
 
+}
 const actions = {
-  login(context, data) {
-    console.log(data)
+  async login(context, data) {
     // todo: 调用登录接口
-    context.commit('setTokens', 123456)
+    const res = await login(data)
+    context.commit('setTokens', res)
   }
 }
 

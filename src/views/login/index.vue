@@ -1,41 +1,26 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+      label-position="left">
 
       <div class="title-container">
         <h3 class="title">Login Form</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="mobile">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="请输入用户名"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="mobile" v-model="loginForm.mobile" placeholder="请输入用户名" name="mobile" type="text" tabindex="1"
+          auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
+        <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
+          placeholder="Password" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
@@ -44,10 +29,11 @@
       <el-form-item prop="isAgree" class="is-agree-item">
         <el-checkbox v-model="loginForm.isAgree">我已阅读并同意用户协议和隐私政策</el-checkbox>
       </el-form-item>
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
+        <span style="margin-right:20px;">mobile: admin</span>
         <span> password: any</span>
       </div>
 
@@ -56,17 +42,18 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+    const validatemobile = (rule, value, callback) => {
+      const reg = /^1[3-9]\d{9}$/
+      if (!reg.test(value)) {
+        callback(new Error('请输入正确的手机号'))
       } else {
         callback()
       }
     }
+
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -84,15 +71,17 @@ export default {
 
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111',
+        mobile: '13800000002',
+        password: 'hm#qd@23!',
         isAgree: false
       },
+
       loginRules: {
-        username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
+        mobile: [
+          { required: true, trigger: 'blur', validator: validatemobile }
         ],
         password: [
+
           { required: true, trigger: 'blur', validator: validatePassword }
         ],
         isAgree: [
@@ -106,7 +95,7 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -125,22 +114,35 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      // this.$refs.loginForm.validate(valid => {
-      //   if (valid) {
-      //     this.loading = true
-      //     this.$store.dispatch('user/login', this.loginForm).then(() => {
-      //       this.$router.push({ path: this.redirect || '/' })
-      //       this.loading = false
-      //     }).catch(() => {
-      //       this.loading = false
-      //     })
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
-      this.$store.dispatch('user/login', this.loginForm)
+    async handleLogin() {
+      if (!this.$refs.loginForm) {
+        console.error('Login form reference is missing');
+        return;
+      }
+
+      this.$refs.loginForm.validate(async (valid) => {
+        console.log(valid+'进入')
+        if (valid) {
+          this.loading = true;
+          try {
+
+            await this.$store.dispatch('user/login', this.loginForm);
+            console.log(this.redirect || '/' )
+            this.$router.push({ path: this.redirect || '/' });
+
+
+          } catch (error) {
+            console.error('Login failed:', error);
+            // 在这里可以显示一个用户友好的错误消息
+            this.$message.error('登录失败，请重试');
+
+          } finally {
+            this.loading = false;
+          }
+        } else {
+          console.log('error submit!!');
+        }
+      });
     }
   }
 }
@@ -150,8 +152,8 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -192,17 +194,17 @@ $cursor: #fff;
   }
 
   .is-agree-item {
-  border: none !important; // 取消边框
-  background: none !important; // 取消背景
-  color: inherit !important; // 使用默认文本颜色
-}
+    border: none !important; // 取消边框
+    background: none !important; // 取消背景
+    color: inherit !important; // 使用默认文本颜色
+  }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
