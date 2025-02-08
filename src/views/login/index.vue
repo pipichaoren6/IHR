@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="请输入用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -39,6 +39,10 @@
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
+      </el-form-item>
+
+      <el-form-item prop="isAgree" class="is-agree-item">
+        <el-checkbox v-model="loginForm.isAgree">我已阅读并同意用户协议和隐私政策</el-checkbox>
       </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
@@ -72,14 +76,30 @@ export default {
         callback()
       }
     }
+    const validateIsAgree = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请同意用户协议和隐私政策'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '111111',
+        isAgree: false
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [
+          { required: true, trigger: 'blur', validator: validateUsername }
+        ],
+        password: [
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ],
+        isAgree: [
+          { trigger: 'change', validator: validateIsAgree }
+        ]
       },
       loading: false,
       passwordType: 'password',
@@ -169,6 +189,12 @@ $cursor: #fff;
     border-radius: 5px;
     color: #454545;
   }
+
+  .is-agree-item {
+  border: none !important; // 取消边框
+  background: none !important; // 取消背景
+  color: inherit !important; // 使用默认文本颜色
+}
 }
 </style>
 
