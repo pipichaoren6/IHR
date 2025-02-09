@@ -113,6 +113,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
+      this.$router.push({ path: this.redirect || '/' });
     },
     async handleLogin() {
       if (!this.$refs.loginForm) {
@@ -121,16 +122,16 @@ export default {
       }
 
       this.$refs.loginForm.validate(async (valid) => {
+        debugger
         console.log(valid+'进入')
         if (valid) {
           this.loading = true;
           try {
-
+            debugger
+            console.log(valid+'进入')
             await this.$store.dispatch('user/login', this.loginForm);
             console.log(this.redirect || '/' )
             this.$router.push({ path: this.redirect || '/' });
-
-
           } catch (error) {
             console.error('Login failed:', error);
             // 在这里可以显示一个用户友好的错误消息

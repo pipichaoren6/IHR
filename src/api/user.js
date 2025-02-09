@@ -13,11 +13,10 @@ export function login(data) {
 
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '/sys/profile',
     method: 'get',
-    params: { token }
   })
 }
 
