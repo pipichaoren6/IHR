@@ -7,8 +7,10 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <img v-if="avatar" :src="avatar" class="user-avatar">
+          <span v-else class="default-avatar">{{username?.slice(0,1)}}</span>
+          <span class="username">{{username}}</span>
+          <i class="el-icon-setting" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -45,10 +47,8 @@ export default {
     ...mapGetters([
       'avatar',
       'sidebar',
+      'username'
     ]),
-  },
-  created() {
-    console.log(this.avatar+"zhi");
   },
   methods: {
     toggleSideBar() {
@@ -116,18 +116,35 @@ export default {
 
     .avatar-container {
       margin-right: 30px;
-
+   
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
+        display: flex;
+        align-items: center;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           border-radius: 10px;
         }
-
+        .default-avatar{
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background-color: #05a182;
+          text-align: center;
+          line-height: 30px;
+          color: white;
+        }
+        .username{
+          margin-left: 10px;
+        }
+        .el-icon-setting{
+          margin-left: 10px;
+          font-size: 18px;
+        }
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;

@@ -31,6 +31,10 @@ const actions = {
     // 调用获取用户信息接口
     const res = await getInfo(data)
     context.commit('setUserInfo', res)
+  },
+  async logout(context) {
+    context.commit('removeToken')
+    context.commit('removeUserInfo')
   }
 }
 

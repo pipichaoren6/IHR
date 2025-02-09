@@ -29,7 +29,12 @@ service.interceptors.response.use(
       return Promise.reject(message)
     }
   },
-  error => {
+  async error => {    
+    if(error.response.status === 401){
+      await store.dispatch('user/logout')
+      Message.error('登录过期，请重新登录')
+      return Promise.reject(error)
+    }
     return Promise.reject(error)
   }
 )
