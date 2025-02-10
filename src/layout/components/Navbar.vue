@@ -21,15 +21,32 @@
           <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
             <el-dropdown-item>Github</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+          <a target="_blank" @click.prevent="updatePassword">
+            <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog title="修改密码" :visible.sync="showDialog">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+      <el-form-item label="旧密码" prop="oldPassword">
+        <el-input v-model="form.oldPassword" type="password" />
+      </el-form-item>
+      <el-form-item label="新密码" prop="newPassword">
+        <el-input v-model="form.newPassword" type="password" />
+      </el-form-item>
+      <el-form-item label="确认密码" prop="confirmPassword">
+        <el-input v-model="form.confirmPassword" type="password" />
+      </el-form-item>
+      <el-form-item style="text-align: center;" label-width="0">
+        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button @click="resetForm">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
   </div>
 </template>
 
@@ -50,14 +67,46 @@ export default {
       'username'
     ]),
   },
+  data(){
+    return {
+      showDialog: false,
+      form: {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      rules: {
+        oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
+        newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+        confirmPassword: [{ required: true, message: '请确认密码', trigger: 'blur' }]
+      } 
+
+    }
+  },
   methods: {
+    // 切换侧边栏
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
+    // 退出登录
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
+    },
+    // 密码修改
+    updatePassword(){
+      this.showDialog = true
+    },
+    submitForm(){
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.showDialog = false
+        }
+      })
+    },
+    resetForm(){
+      this.$refs.form.resetFields()
+    } 
   }
 }
 </script>
