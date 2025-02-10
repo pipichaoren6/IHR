@@ -68,6 +68,14 @@ export default {
     ]),
   },
   data(){
+    const validateConfirmPassword = (rule, value, callback) => {
+      if (value !== this.form.newPassword) {
+        console.log("buyizhi");
+        callback(new Error('两次密码不一致'))
+        return
+      } 
+      callback()
+    }
     return {
       showDialog: false,
       form: {
@@ -78,7 +86,10 @@ export default {
       rules: {
         oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
         newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        confirmPassword: [{ required: true, message: '请确认密码', trigger: 'blur' }]
+        confirmPassword: [
+          { required: true, message: '请确认密码', trigger: 'blur'},
+          { trigger: 'blur', validator: validateConfirmPassword }
+        ]
       } 
 
     }
