@@ -122,12 +122,10 @@ export default {
       }
 
       this.$refs.loginForm.validate(async (valid) => {
-        debugger
         console.log(valid+'进入')
         if (valid) {
           this.loading = true;
           try {
-            debugger
             console.log(valid+'进入')
             await this.$store.dispatch('user/login', this.loginForm);
             console.log(this.redirect || '/' )

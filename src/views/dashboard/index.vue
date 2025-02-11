@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <div class="dashboard-text">name: {{ username }}</div>
   </div>
 </template>
 
@@ -11,12 +11,9 @@ export default {
   name: 'Dashboard',
   computed: {
     ...mapGetters([
-      'name'
+      'username'
     ])
   },
-  created(){
-    this.$store.dispatch('user/getUserInfo')
-  }
 }
 </script>
 

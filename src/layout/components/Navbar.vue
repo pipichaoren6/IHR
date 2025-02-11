@@ -101,8 +101,8 @@ export default {
     },
     // 退出登录
     async logout() {
-      await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      await this.$store.dispatch('user/logout')
     },
     // 密码修改
     updatePassword(){

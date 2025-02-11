@@ -5,6 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import axios from 'axios'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -20,9 +21,10 @@ router.beforeEach(async(to, from, next) => {
   // determine whether the user has logged in
   const hasToken = store.state.user.tokens
   if (hasToken) {
-    if (to.path === '/login') {
+    if (to.path === '/' || to.path === '/dashboard') {
       // if is logged in, redirect to the home page
-      next({ path: '/' })
+      await store.dispatch('user/getUserInfo')
+      next()
       NProgress.done()
     } else {
       const hasGetUserInfo = store.getters.userId 
@@ -32,7 +34,6 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           await store.dispatch('user/getUserInfo')
-
           next()
         } catch (error) {
           // remove token and go to login page to re-login
@@ -54,6 +55,18 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     }
   }
+
+  // 获取请求者的IP地址
+  const ip = to.meta.ip || 'unknown'; // 假设IP地址存储在meta中
+
+  // 发送请求到服务器保存IP地址
+  axios.post('http://localhost:3000/save-ip', { ip })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error saving IP address:', error);
+    });
 })
 
 router.afterEach(() => {
