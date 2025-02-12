@@ -10,8 +10,6 @@ export function login(data) {
       password: data.password
     }
   })
-
-
 }
 
 export function getInfo() {
@@ -21,14 +19,17 @@ export function getInfo() {
   })
 }
 
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
-}
-
 export function saveUser(data) {
   //请求端口为3001 
   return axios.post('http://123.249.115.172:3001/test', data) 
+}
+
+
+// 更新密码
+export function updatePassword(data) {
+  return request({
+    url: '/sys/user/updatePass',
+    method: 'put',
+    data: data
+  })
 }

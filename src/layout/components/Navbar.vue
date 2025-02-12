@@ -30,7 +30,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog title="修改密码" :visible.sync="showDialog">
+    <el-dialog title="修改密码" :visible.sync="showDialog" @close="cancelbtn">
     <el-form :model="form" :rules="rules" ref="form" label-width="100px">
       <el-form-item label="旧密码" prop="oldPassword">
         <el-input v-model="form.oldPassword" type="password" />
@@ -54,6 +54,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { updatePassword } from '@/api/user'
 
 export default {
   components: {
@@ -109,15 +110,24 @@ export default {
       this.showDialog = true
     },
     submitForm(){
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(async(valid) => {
         if (valid) {
+          await updatePassword(this.form).then(res => {
+            console.log('提交成功')
+          }) 
+          this.$refs.form.resetFields()
           this.showDialog = false
+
         }
       })
     },
     resetForm(){
       this.$refs.form.resetFields()
-    } 
+    },
+    cancelbtn(){
+      this.$refs.form.resetFields()
+      this.showDialog = false
+    }
   }
 }
 </script>
