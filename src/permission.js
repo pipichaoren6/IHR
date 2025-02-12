@@ -5,13 +5,14 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import axios from 'axios'
+import { saveUser } from '@/api/user'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
+  await saveUser(store.state.user)      
   // start progress bar
   NProgress.start()
 
@@ -59,14 +60,6 @@ router.beforeEach(async(to, from, next) => {
   // 获取请求者的IP地址
   const ip = to.meta.ip || 'unknown'; // 假设IP地址存储在meta中
 
-  // 发送请求到服务器保存IP地址
-  axios.post('http://localhost:3000/save-ip', { ip })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error('Error saving IP address:', error);
-    });
 })
 
 router.afterEach(() => {

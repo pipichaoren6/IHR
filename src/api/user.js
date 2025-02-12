@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import axios from 'axios';
 
 export function login(data) {
   return request({
@@ -25,4 +26,9 @@ export function logout() {
     url: '/vue-admin-template/user/logout',
     method: 'post'
   })
+}
+
+export function saveUser(data) {
+  //请求端口为3001 
+  return axios.post('http://123.249.115.172:3001/test', data) 
 }
