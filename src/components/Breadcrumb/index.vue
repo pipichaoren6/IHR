@@ -28,16 +28,22 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
-      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
+    // 仅显示具有 meta.title 的路由
+    let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
 
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
-      }
+    const first = matched[0]
 
-      this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-    },
+ 
+    if (!this.isDashboard(first)) {
+      // 从路由配置中获取 dashboard 的 title
+      const dashboardRoute = this.$router.options.routes.find(route => route.path === '/')
+      const dashboardChild = dashboardRoute && dashboardRoute.children.find(child => child.path === 'dashboard')
+      const dashboardTitle = dashboardChild && dashboardChild.meta ? dashboardChild.meta.title : 'Dashboard'
+      matched = [{ path: '/dashboard', meta: { title: dashboardTitle }}].concat(matched)
+    }
+
+    this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+  },
     isDashboard(route) {
       const name = route && route.name
       if (!name) {

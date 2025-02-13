@@ -12,7 +12,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
-  await saveUser(store.state.user.userInfo.username)      
+  await saveUser(store.state.user.userInfo.username||"")      
   // start progress bar
   NProgress.start()
 
@@ -37,10 +37,13 @@ router.beforeEach(async(to, from, next) => {
           next()
         } catch (error) {
           // remove token and go to login page to re-login
+          console.log("重置token");
+          
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
+          console.log("重置token1");
         }
       }
     }    
