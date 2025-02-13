@@ -128,7 +128,7 @@ export default {
           try {
             console.log(valid+'进入')
             await this.$store.dispatch('user/login', this.loginForm);
-            console.log(this.redirect || '/' )
+            await this.$store.dispatch('user/getUserInfo')
             this.$router.push({ path: this.redirect || '/' });
           } catch (error) {
             console.error('Login failed:', error);
