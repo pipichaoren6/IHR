@@ -2,7 +2,7 @@
 
 ```bash
 # clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+git clone git@github.com:pipichaoren6/IHR.git
 
 # enter the project directory
 cd vue-admin-template
