@@ -25,9 +25,10 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1000"
-        :page-size="20"
-        :current-page="1"
+        :total="pageParams.total"
+        :page-size="pageParams.pageSize"
+        :current-page="pageParams.page"
+        @current-change="handlePageChange"
       />
     </el-row>
   </div>
@@ -38,7 +39,12 @@ export default {
   name: 'Role',
   data() {
     return {
-      tableData: []
+      tableData: [],
+      pageParams: {
+        page: 1,
+        pageSize: 20,
+        total: 0
+      }
     }
   },
   created() {
@@ -46,8 +52,13 @@ export default {
   },
   methods: {
     async getRoleList() {
-      const {rows} = await getRoleList()
+      const {rows, total} = await getRoleList(this.pageParams)
       this.tableData = rows
+      this.pageParams.total = total
+    },
+    handlePageChange(page) {
+      this.pageParams.page = page
+      this.getRoleList()
     }
   }
 }
